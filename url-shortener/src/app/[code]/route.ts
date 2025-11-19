@@ -11,8 +11,8 @@ export async function GET(
   const code = (await params).code
   
   const link = await Link.findOne({ code })
+  console.log("in code/link")
   if (!link) {
-    console.log("in code/link")
     return new Response("Not Found", { status: 404 })
   }
 

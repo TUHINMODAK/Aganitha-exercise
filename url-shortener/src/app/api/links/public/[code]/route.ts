@@ -5,7 +5,7 @@ import Link from "@/models/Link";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   const { code } = await params;
   await connectDB();

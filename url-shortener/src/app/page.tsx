@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { useToast } from "@/components/ToastProvider"; // Correct import
 import { Loader2, Link2, Trash2, ExternalLink, Plus } from "lucide-react";
-import { signOut } from "next-auth/react";
 
 const formSchema = z.object({
   targetUrl: z.string().url({ message: "Please enter a valid URL" }),
@@ -46,7 +44,6 @@ interface Link {
 }
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const { success, error } = useToast(); // Beautiful helpers
   const [links, setLinks] = useState<Link[]>([]);
@@ -61,15 +58,6 @@ export default function Dashboard() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
-
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/auth/login");
-  }, [status, router]);
-
-  const logout = async () => {
-  await signOut({ redirect: false }); 
-  // session becomes unauthenticated → your useEffect runs → redirect happens
-};
 
   const fetchLinks = async () => {
     try {
@@ -87,8 +75,8 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (session) fetchLinks();
-  }, [session]);
+    fetchLinks();
+  }, []);
 
   const onSubmit = async (data: FormData) => {
     setSubmitting(true);
@@ -151,7 +139,7 @@ export default function Dashboard() {
     }
   };
 
-  const showStats = (code: string) =>{
+  const showStats = (code: string) => {
     router.push(`/code/${code}`);
   }
 
@@ -167,26 +155,10 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
-      <div className="flex items-center justify-between mb-8">
-        {/* LEFT HEADER */}
-        <h1 className="text-4xl font-bold flex items-center gap-3 text-gray-800">
-          <Link2 className="w-12 h-12 text-blue-600" />
-          My Short Links
-        </h1>
-
-        {/* RIGHT BUTTONS */}
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 rounded-full hover:bg-red-700 hover:text-white text-red-700 transition duration-200 "
-            onClick={logout}
-          >
-            Logout
-          </Button>
-        </div>
-      </div>
-
-
+      <h1 className="text-4xl font-bold flex items-center gap-3 text-gray-800">
+        <Link2 className="w-12 h-12 text-blue-600" />
+        My Short Links
+      </h1>
 
       {/* Create Form */}
       <Card className="mb-10 shadow-lg">
@@ -280,6 +252,7 @@ export default function Dashboard() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:underline flex items-center gap-1"
+                          onClick={() => fetchLinks()}
                         >
                           {baseUrl}/{link.code} <ExternalLink className="w-4 h-4" />
                         </a>
