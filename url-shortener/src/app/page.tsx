@@ -143,7 +143,7 @@ export default function Dashboard() {
     router.push(`/code/${code}`);
   }
 
-  if (status === "loading" || loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
