@@ -4,14 +4,15 @@ import Link from "@/models/Link"
 
 export async function GET(
   request: Request,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   await connectDB()
-
-  const code = params.code
-
+  
+  const code = (await params).code
+  
   const link = await Link.findOne({ code })
   if (!link) {
+    console.log("in code/link")
     return new Response("Not Found", { status: 404 })
   }
 

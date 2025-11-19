@@ -7,8 +7,9 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { code: string } }
 ) {
+  const { code } = await params;
   await connectDB();
-  const link = await Link.findOne({ code: params.code }).select("-userId -__v");
+  const link = await Link.findOne({ code }).select("-userId -__v");
 
   if (!link) {
     return new Response("Not found", { status: 404 });

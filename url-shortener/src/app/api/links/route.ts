@@ -23,11 +23,15 @@ export async function POST(req: NextRequest) {
   const validation = createSchema.safeParse(body)
   if (!validation.success) return new Response("Invalid data", { status: 400 })
 
-  let code = validation.data.customCode || Math.random().toString(36).substring(2, 8)
+  let code = validation.data.customCode
+
+  if(!code) {
+    return Response.json({ message: "Custom code is required" }, { status: 400 })
+  }
 
   // Ensure unique code
-  while (await Link.findOne({ code })) {
-    code = Math.random().toString(36).substring(2, 8)
+  if (await Link.findOne({ code })) {
+    return Response.json({ message: "Code already in use" }, { status: 400 })
   }
 
   const newLink = await Link.create({

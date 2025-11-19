@@ -44,7 +44,7 @@ export default function LoginPage() {
       error("Login failed", "Invalid email or password");
     } else {
       success("Welcome back!", "You're now logged in");
-      router.push("/dashboard");
+      router.push("/");
     }
     setIsLoading(false);
   };
