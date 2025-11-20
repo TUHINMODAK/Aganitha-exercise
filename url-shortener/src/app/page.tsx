@@ -252,7 +252,11 @@ export default function Dashboard() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:underline flex items-center gap-1"
-                          onClick={() => fetchLinks()}
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            await fetchLinks();
+                            window.open(`/${link.code}`, "_blank");
+                          }}
                         >
                           {baseUrl}/{link.code} <ExternalLink className="w-4 h-4" />
                         </a>
