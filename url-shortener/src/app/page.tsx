@@ -184,7 +184,7 @@ export default function Dashboard() {
 
             <div>
               <Label htmlFor="customCode" className="text-lg">
-                Custom Code (optional) → {baseUrl}/
+                Custom Code → {baseUrl}/
               </Label>
               <Input
                 id="customCode"
